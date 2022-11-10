@@ -8,7 +8,7 @@ class Ktext extends StatelessWidget {
     Key? key,
     required this.text,
     this.color,
-    required this.fontStyle,
+    this.fontStyle,
     this.fontWeight,
     this.fontSize,
     this.textAlign,
