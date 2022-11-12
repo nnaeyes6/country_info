@@ -1,23 +1,51 @@
 import 'package:country_list_app/features/screens/my_country_home_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
+import 'data/repository/country_repo.dart';
+import 'logic/bloc/bloc/country_bloc.dart';
+import 'logic/bloc/bloc_observer.dart';
+import 'logic/cubit/filter_group_cubit/fiter_group_cubit.dart';
+
 void main() {
-  runApp(const MyApp());
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
+  // ignore: deprecated_member_use
+  BlocOverrides.runZoned(
+    () => runApp(const MyApp()),
+    blocObserver: CountryBlocObserver(),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Country',
-      theme: ThemeData(
-        fontFamily: "Arvo",
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyCountryHomeScreen(),
-    );
+    return RepositoryProvider<CountryRepository>(
+        create: (context) => CountryRepository(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<CountryBloc>(
+              create: (context) => CountryBloc(
+                countryRepository:
+                    RepositoryProvider.of<CountryRepository>(context),
+              ),
+            ),
+            BlocProvider<FilterGroupCubit>(
+              create: (context) => FilterGroupCubit(),
+            ),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorSchemeSeed: Colors.deepOrange,
+              useMaterial3: true,
+            ),
+            home: const HomeScreen(),
+          ),
+        ));
   }
 }
