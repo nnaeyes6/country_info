@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
 class CountryModel extends Equatable {
@@ -23,6 +24,7 @@ class CountryModel extends Equatable {
   final int population;
   final String continents;
   final String flagPng;
+
   final String unGrouped;
 
   @override

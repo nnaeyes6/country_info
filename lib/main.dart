@@ -1,3 +1,4 @@
+import 'package:country_list_app/core/constants/colors.dart';
 import 'package:country_list_app/features/screens/my_country_home_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,9 +41,13 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
+            darkTheme: ThemeData.dark(),
             theme: ThemeData(
-              colorSchemeSeed: Colors.deepOrange,
-              useMaterial3: true,
+              // brightness: Brightness.dark,
+              visualDensity:
+                  const VisualDensity(horizontal: 2.0, vertical: 2.0),
+              primaryColorLight: backgroundColorwt,
+              primaryColorDark: backgroundColordark,
             ),
             home: const HomeScreen(),
           ),

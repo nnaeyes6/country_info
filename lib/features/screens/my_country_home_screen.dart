@@ -1,4 +1,6 @@
+import 'package:country_list_app/core/constants/ktext.dart';
 import 'package:country_list_app/features/widgets/country_card.dart';
+import 'package:country_list_app/features/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -7,10 +9,17 @@ import '../../core/constants/colors.dart';
 import '../../data/functions/functions.dart';
 import '../../data/models/country_model.dart';
 import '../../logic/bloc/bloc/country_bloc.dart';
+import '../widgets/custom_button.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isClicked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,15 +27,33 @@ class HomeScreen extends StatelessWidget {
       body: BlocBuilder<CountryBloc, CountryState>(
         builder: (context, state) {
           if (state is CountryInitialState) {
-            return Center(
-              child: ElevatedButton(
-                onPressed: () {
+            return InkWell(
+                onTap: () {
                   BlocProvider.of<CountryBloc>(context).add(LoadCountryEvent());
                 },
-                child: const Text('Welcome to Country Info... Click',
-                    style: TextStyle(fontSize: 18)),
-              ),
-            );
+                child: Center(
+                  child: SizedBox(
+                    height: 400,
+                    width: 350,
+                    child: Column(
+                      children: [
+                        const Ktext(
+                          text: 'Countries Info',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent,
+                        ),
+                        Image.asset('images/european-union.png'),
+                        const Ktext(
+                          text: 'Open',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent,
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
           }
 
           if (state is CountryLoadingState) {
@@ -83,12 +110,39 @@ class HomeScreen extends StatelessWidget {
                       Container(
                         height: 10,
                         padding: const EdgeInsets.all(15),
-                        child: Image.asset(
-                          'images/sun.png',
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (isClicked) {
+                                Scaffold(
+                                  backgroundColor: backgroundColordark,
+                                );
+                              }
+                              Scaffold(
+                                backgroundColor: backgroundColorwt,
+                              );
+                            });
+                          },
+                          child: Image.asset(
+                            'images/sun.png',
+                          ),
                         ),
                       ),
                     ]),
-                // const SliverToBoxAdapter(child: SortGroupWidget()),
+                const SearchCountry(),
+                const CustomButtons(
+                  filterList: [],
+                ),
+                SliverToBoxAdapter(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Ktext(text: 'A'),
+                    ),
+                  ],
+                )),
                 MultiSliver(
                   children:
                       buildCountryGroups(gridGroupedList: sortedGroupedList),
